@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from redis_om import get_redis_connection, HashModel
+from fastapi import HTTPException
 
 app = FastAPI()
 
@@ -44,3 +45,25 @@ def format(pk: str):
         'price': product.price,
         'quantity': product.quantity
     }
+
+
+@app.post('/products')
+def create(product: Product):
+    return product.save()
+
+
+@app.get('/products/{pk}')
+def get(pk: str):
+    return Product.get(pk)
+
+
+@app.delete('/products/{pk}')
+def delete(pk: str):
+     try:
+          product =Product.delete(pk)
+          return {
+              "product":product ,"message":"success"
+
+          }
+     except:
+         raise HTTPException( status_code=204,detail=f"Product with this id  {pk}is aleready deleted ")
