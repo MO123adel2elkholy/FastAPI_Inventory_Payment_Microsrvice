@@ -70,7 +70,7 @@ async def create(request: Request, background_tasks: BackgroundTasks):  # id, qu
 
 
 def order_completed(order: Order):
-    time.sleep(5)
+    time.sleep(10)
     order.status = 'completed'
     order.save()
     #  sendignn Webhook to inventory microservice to update the quantity of the product after order is completed using redis stream 

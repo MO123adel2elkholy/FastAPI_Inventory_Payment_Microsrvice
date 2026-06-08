@@ -24,9 +24,11 @@ while True:
                         product.quantity = product.quantity - int(obj['quantity'])
                         product.save()
                         redis.xack(key, group, message_id)
+                        print('order processed: success fully ', obj)
                     except Exception as e:
                         print('processing error:', e)
-                        redis.xadd('refund_order', obj, '*')
+                        #  this is uesd for Handling refund order if somtiing wrong with the product like delete the product 
+                        redis.xadd('refund_order', obj, '*')  # sending refunded event to payment srvice 
 
     except Exception as e:
         print('consumer error:', e)
