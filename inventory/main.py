@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from redis_om import get_redis_connection, HashModel
@@ -14,8 +15,8 @@ app.add_middleware(
 
 
 redis = get_redis_connection(
-    host="localhost",
-    port=6379,
+    host=os.environ.get("REDIS_HOST", "localhost"),
+    port=int(os.environ.get("REDIS_PORT", 6379)),
     decode_responses=True
 )
 
