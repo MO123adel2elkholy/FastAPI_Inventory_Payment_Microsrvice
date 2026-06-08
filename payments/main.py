@@ -38,7 +38,12 @@ class Order(HashModel):
 
 @app.get('/orders/{pk}')
 def get(pk: str):
-    return Order.get(pk)
+    try: 
+       return Order.get(pk)
+    except:
+        print("Somthing Wrong get had haoend ")
+        raise HTTPException( status_code=204,detail=f"Product with this id  {pk}is aleready deleted ")
+
 
 
 @app.post('/orders')
@@ -56,10 +61,17 @@ async def create(request: Request, background_tasks: BackgroundTasks):  # id, qu
         quantity=body['quantity'],
         status='pending'
     )
+    background_tasks.add_task(order_completed, order) # simulating Payment processor taking  littil time for process your order 
+
     order.save()
 
     return order
 
 
+
+def order_completed(order: Order):
+    time.sleep(5)
+    order.status = 'completed'
+    order.save()
 
 
